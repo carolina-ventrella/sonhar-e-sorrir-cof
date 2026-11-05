@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard de orçamento do Coffee Break do evento Sonhar e Sorrir.">
+  <title>Sonhar e Sorrir | Orçamento Coffee Break</title>
+  <style>
+    :root {
+      --bg:#f4f6f8; --surface:#fff; --ink:#18212f; --muted:#687386;
+      --line:#e4e9ef; --brand:#176b59; --brand-dark:#105243;
+      --brand-soft:#e7f3ef; --gold:#c58a35; --red:#b94b4b;
+      --shadow:0 8px 28px rgba(26,39,56,.07); --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    .wrap{max-width:1180px;margin:auto;padding:28px 20px 48px}
+    header{background:linear-gradient(120deg,#123f37,#176b59 65%,#39836c);color:#fff;border-radius:24px;padding:30px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    header:after{content:"";position:absolute;width:260px;height:260px;border:1px solid #ffffff30;border-radius:50%;right:-55px;top:-110px;box-shadow:0 0 0 28px #ffffff0b,0 0 0 58px #ffffff08}
+    .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:700;opacity:.8}
+    h1{font-size:clamp(1.8rem,4vw,2.65rem);margin:8px 0}
+    header p{margin:0;color:#e1eee9}
+    .header-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .pill{border:1px solid #ffffff55;background:#ffffff13;padding:8px 12px;border-radius:999px;font-size:.85rem}
+    .section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:30px 0 14px}
+    h2{font-size:1.15rem;margin:0}
+    .sub{color:var(--muted);font-size:.88rem;margin:5px 0 0}
+    .grid{display:grid;gap:16px}
+    .kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:var(--shadow)}
+    .kpi-label{color:var(--muted);font-size:.83rem}
+    .kpi-value{font-size:1.75rem;font-weight:760;letter-spacing:-.04em;margin:8px 0 2px}
+    .kpi-note{font-size:.78rem;color:var(--muted)}
+    .icon{display:inline-grid;place-items:center;width:34px;height:34px;background:var(--brand-soft);color:var(--brand);border-radius:11px;font-weight:800;margin-bottom:12px}
+    .money{font-variant-numeric:tabular-nums}
+    table{width:100%;border-collapse:collapse;font-size:.9rem}
+    th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+    th{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+    td:last-child,th:last-child{text-align:right}
+    tr:last-child td{border-bottom:0}
+    .total-row td{font-weight:800;border-top:1px solid var(--line)}
+    .tag{display:inline-block;padding:5px 9px;border-radius:999px;font-size:.75rem;font-weight:700;background:var(--brand-soft);color:var(--brand)}
+    .tag.gold{background:#fbf1df;color:#94601d}
+    .bar-list{display:grid;gap:18px;margin-top:14px}
+    .bar-head{display:flex;justify-content:space-between;gap:12px;font-size:.9rem;margin-bottom:8px}
+    .track{height:12px;border-radius:99px;background:#edf0f3;overflow:hidden}
+    .bar{height:100%;border-radius:99px;background:var(--brand)}
+    .bar.alt{background:var(--gold)}
+    .controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    label{display:block;color:var(--muted);font-size:.82rem;font-weight:650;margin-bottom:7px}
+    select,input{width:100%;padding:11px 12px;border:1px solid #d8e0e8;border-radius:10px;background:#fff;color:var(--ink);font:inherit}
+    input[type=number]{font-variant-numeric:tabular-nums}
+    .result{background:var(--brand-soft);border:1px solid #cce4db;border-radius:15px;padding:17px;margin-top:15px}
+    .result strong{font-size:1.9rem;color:var(--brand-dark);display:block;margin:5px 0}
+    .result small{color:#426b60}
+    .note{border-left:4px solid var(--gold);background:#fff9ef;padding:13px 15px;border-radius:0 12px 12px 0;color:#654d2c;font-size:.88rem;line-height:1.55}
+    .checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .check{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:.88rem}
+    .check input{width:auto;accent-color:var(--brand)}
+    .footer{margin-top:28px;color:var(--muted);font-size:.78rem;text-align:center;line-height:1.6}
+    .muted{color:var(--muted)}
+    @media(max-width:850px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.wrap{padding:14px 12px 32px}header{padding:23px 19px}.two,.controls{grid-template-columns:1fr}.checklist{grid-template-columns:1fr}.card{padding:15px}.section-title{align-items:start;flex-direction:column}table{font-size:.82rem}th,td{padding:10px 6px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Painel de planejamento financeiro</div>
+    <h1>Sonhar e Sorrir</h1>
+    <p>Coffee Break • Clínica Vamos Sorrir</p>
+    <div class="header-meta">
+      <span class="pill">📅 Evento: data a confirmar</span>
+      <span class="pill">🕗 08h às 20h • 12 horas</span>
+      <span class="pill">👥 90 participantes estimados</span>
+    </div>
+  </header>
+
+  <section class="grid kpis" aria-label="Indicadores principais">
+    <article class="card"><div class="icon">R$</div><div class="kpi-label">Orçamento-base atual</div><div class="kpi-value money" id="kpiBase">R$ 997,00</div><div class="kpi-note">Mantovani + 3 mesas avulsas</div></article>
+    <article class="card"><div class="icon">👥</div><div class="kpi-label">Custo-base por pessoa</div><div class="kpi-value money" id="kpiPessoa">R$ 11,08</div><div class="kpi-note">Divisão por 90 participantes</div></article>
+    <article class="card"><div class="icon">🥟</div><div class="kpi-label">Salgados cotados</div><div class="kpi-value">600</div><div class="kpi-note">Aproximadamente 6,7 por pessoa</div></article>
+    <article class="card"><div class="icon">🪑</div><div class="kpi-label">Mesas de apoio</div><div class="kpi-value">Até 3</div><div class="kpi-note">Alimentos, bebidas e coolers</div></article>
+  </section>
+
+  <div class="section-title"><div><h2>Comparativo de alimentação</h2><p class="sub">Valores conforme os orçamentos recebidos.</p></div><span class="tag">Cotação recebida</span></div>
+  <section class="grid two">
+    <article class="card">
+      <h2>Padaria Mantovani</h2><p class="sub">Botucatu • orçamento de 05/11/2026</p>
+      <table>
+        <tr><td>600 mini salgados</td><td>Quantidade cotada</td></tr>
+        <tr><td>6 baguetes de metro</td><td>Quantidade cotada</td></tr>
+        <tr><td>2 bolos médios</td><td>Quantidade cotada</td></tr>
+        <tr><td>Total sem entrega</td><td class="money">R$ 950,00</td></tr>
+        <tr class="total-row"><td>Total com entrega</td><td class="money">R$ 970,00</td></tr>
+      </table>
+      <p><span class="tag">Menor preço informado</span></p>
+    </article>
+    <article class="card">
+      <h2>Panificadora Bartoli</h2><p class="sub">Botucatu</p>
+      <table>
+        <tr><td>600 salgados</td><td>Quantidade cotada</td></tr>
+        <tr><td>6 baguetes de metro</td><td>Quantidade cotada</td></tr>
+        <tr><td>2 bolos grandes simples</td><td>Quantidade cotada</td></tr>
+        <tr><td>Entrega</td><td>Confirmar condição</td></tr>
+        <tr class="total-row"><td>Total informado</td><td class="money">R$ 980,00</td></tr>
+      </table>
+      <p><span class="tag gold">Bolos descritos como grandes</span></p>
+    </article>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Comparação visual dos totais</h2><p class="sub">Totais de alimentação com entrega conforme valores apresentados.</p>
+    <div class="bar-list">
+      <div><div class="bar-head"><span>Padaria Mantovani</span><strong class="money">R$ 970,00</strong></div><div class="track"><div class="bar" style="width:98.98%"></div></div></div>
+      <div><div class="bar-head"><span>Panificadora Bartoli</span><strong class="money">R$ 980,00</strong></div><div class="track"><div class="bar alt" style="width:100%"></div></div></div>
+    </div>
+    <p class="sub" style="margin-top:15px">Diferença: R$ 10,00. Antes de escolher, confirmar tamanho/peso dos bolos, padrão dos salgados e condição de entrega da Bartoli.</p>
+  </section>
+
+  <div class="section-title"><div><h2>Locação de mesas • Osmarajá</h2><p class="sub">Até 3 mesas de apoio; não foi prevista necessidade de 90 assentos.</p></div></div>
+  <section class="card">
+    <table>
+      <thead><tr><th>Opção</th><th>Composição</th><th>Preço unitário</th></tr></thead>
+      <tbody>
+        <tr><td>Mesa branca avulsa</td><td>1 mesa</td><td>R$ 9,00</td></tr>
+        <tr><td>Cadeira branca avulsa</td><td>1 cadeira</td><td>R$ 3,00</td></tr>
+        <tr><td>Jogo branco sem toalha</td><td>1 mesa + 4 cadeiras</td><td>R$ 15,00</td></tr>
+        <tr><td>Jogo branco com toalha</td><td>1 mesa + 4 cadeiras</td><td>R$ 17,00</td></tr>
+        <tr><td>Mesa preta avulsa</td><td>1 mesa</td><td>R$ 12,00</td></tr>
+        <tr><td>Jogo preto com toalha</td><td>1 mesa + 4 cadeiras</td><td>R$ 25,00</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:14px">Osmarajá informa mesas Tramontina reforçadas e cadeiras com capacidade para até 150 kg. Locação válida por até 3 dias. A entrega pode ser isenta conforme quantidade e localidade; confirmar disponibilidade e frete.</div>
+  </section>
+
+  <div class="section-title"><div><h2>Simulador de orçamento</h2><p class="sub">Altere as opções para atualizar os totais automaticamente.</p></div><span class="tag">Editável</span></div>
+  <section class="card">
+    <div class="controls">
+      <div><label for="fornecedor">Fornecedor de alimentação</label><select id="fornecedor"><option value="970">Mantovani — R$ 970,00 com entrega</option><option value="980">Bartoli — R$ 980,00</option></select></div>
+      <div><label for="tipoMesa">Locação</label><select id="tipoMesa"><option value="9">Mesa branca avulsa — R$ 9,00</option><option value="17">Jogo branco com toalha — R$ 17,00</option><option value="15">Jogo branco sem toalha — R$ 15,00</option><option value="12">Mesa preta avulsa — R$ 12,00</option><option value="25">Jogo preto com toalha — R$ 25,00</option></select></div>
+      <div><label for="qtdMesas">Quantidade de mesas (1 a 3)</label><input id="qtdMesas" type="number" min="1" max="3" step="1" value="3"></div>
+      <div><label for="extras">Bebidas, gelo e descartáveis (R$)</label><input id="extras" type="number" min="0" step="0.01" value="0" placeholder="Informe quando tiver cotação"></div>
+      <div><label for="outros">Outros custos / entrega (R$)</label><input id="outros" type="number" min="0" step="0.01" value="0"></div>
+      <div><label for="pessoas">Participantes estimados</label><input id="pessoas" type="number" min="1" step="1" value="90"></div>
+    </div>
+    <div class="result" aria-live="polite">
+      <span class="muted">Total estimado atualizado</span>
+      <strong id="totalSimulado">R$ 997,00</strong>
+      <small id="porPessoa">R$ 11,08 por participante • alimentação + locação + adicionais</small>
+    </div>
+  </section>
+
+  <div class="section-title"><div><h2>Itens pendentes de cotação</h2><p class="sub">Marque os itens conforme forem cotados ou providenciados.</p></div></div>
+  <section class="card">
+    <div class="checklist" id="pendencias">
+      <label class="check"><input type="checkbox"> Café e açúcar</label>
+      <label class="check"><input type="checkbox"> Água mineral</label>
+      <label class="check"><input type="checkbox"> Sucos</label>
+      <label class="check"><input type="checkbox"> Refrigerantes</label>
+      <label class="check"><input type="checkbox"> Gelo para coolers</label>
+      <label class="check"><input type="checkbox"> Copos descartáveis</label>
+      <label class="check"><input type="checkbox"> Pratos descartáveis</label>
+      <label class="check"><input type="checkbox"> Guardanapos</label>
+      <label class="check"><input type="checkbox"> Mexedores e utensílios</label>
+      <label class="check"><input type="checkbox"> Entrega das mesas</label>
+    </div>
+    <p class="sub" id="progresso" style="margin-top:14px">0 de 10 itens marcados.</p>
+  </section>
+
+  <div class="section-title"><div><h2>Cronograma sugerido de atendimento</h2><p class="sub">Distribuição de reposições ao longo do evento; ajustar conforme consumo real.</p></div></div>
+  <section class="card">
+    <table>
+      <thead><tr><th>Horário</th><th>Atividade</th></tr></thead>
+      <tbody>
+        <tr><td>08h–10h</td><td>Montagem e primeira oferta de café, bebidas e alimentos.</td></tr>
+        <tr><td>10h–12h</td><td>Conferência de consumo e reposição de salgados e bebidas.</td></tr>
+        <tr><td>12h–15h</td><td>Reposições fracionadas; acompanhar especialmente água e bebidas.</td></tr>
+        <tr><td>15h–17h</td><td>Nova oferta de alimentos e bolos; reorganizar a mesa.</td></tr>
+        <tr><td>17h–20h</td><td>Reposição final, controle de sobras e encerramento.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="note" style="margin-top:18px"><strong>Atenção ao dimensionamento:</strong> 600 salgados equivalem a cerca de 6,7 unidades por pessoa, além das baguetes e dos bolos. Como o evento dura 12 horas, confirmar se haverá almoço ou outra refeição e se a quantidade de alimentos é suficiente. O painel não presume valores ainda não cotados para bebidas, gelo e descartáveis.</div>
+
+  <div class="footer">
+    Dashboard de planejamento • Sonhar e Sorrir • Clínica Vamos Sorrir<br>
+    Valores transcritos dos orçamentos fornecidos e das condições informadas pelo Osmarajá. Confirme preços, disponibilidade, entrega e condições antes da contratação.
+  </div>
+</div>
+<script>
+  const brl = v => Number(v || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const fields = ['fornecedor','tipoMesa','qtdMesas','extras','outros','pessoas'];
+  function update(){
+    const food = Number(document.getElementById('fornecedor').value);
+    const tablePrice = Number(document.getElementById('tipoMesa').value);
+    const tables = Math.max(1,Math.min(3,Math.floor(Number(document.getElementById('qtdMesas').value)||1)));
+    document.getElementById('qtdMesas').value = tables;
+    const extras = Math.max(0,Number(document.getElementById('extras').value)||0);
+    const others = Math.max(0,Number(document.getElementById('outros').value)||0);
+    const people = Math.max(1,Math.floor(Number(document.getElementById('pessoas').value)||90));
+    const total = food + tablePrice*tables + extras + others;
+    document.getElementById('totalSimulado').textContent = brl(total);
+    document.getElementById('porPessoa').textContent = `${brl(total/people)} por participante • alimentação + locação + adicionais`;
+    document.getElementById('kpiBase').textContent = brl(970+27);
+    document.getElementById('kpiPessoa').textContent = brl((970+27)/90);
+  }
+  fields.forEach(id=>document.getElementById(id).addEventListener('input',update));
+  document.querySelectorAll('#pendencias input').forEach(el=>el.addEventListener('change',()=>{
+    const all=[...document.querySelectorAll('#pendencias input')];
+    const done=all.filter(x=>x.checked).length;
+    document.getElementById('progresso').textContent=`${done} de ${all.length} itens marcados.`;
+  }));
+  update();
+</script>
+</body>
+</html>
